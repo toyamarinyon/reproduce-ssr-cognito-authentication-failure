@@ -1,81 +1,92 @@
-import type { NextPage } from "next";
-import { useEffect, useState } from "react";
+import type { GetServerSideProps, NextPage } from "next";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { StatePresenter } from "../components/StatePresenter";
+import { readFileSync } from "fs";
+
+const formScheme = z.object({
+  email: z.string(),
+  password: z.string(),
+});
+export const getServerSideProps: GetServerSideProps = async () => {
+  readFileSync("./pages/index.tsx");
+  return {
+    props: {},
+  };
+};
 
 const Home: NextPage = () => {
-  const [cookies, setCookies] = useState<string[][]>([]);
-  useEffect(() => {
-    setCookies(document.cookie.split(";").map((cookie) => cookie.split("=")));
-  }, []);
-
+  const { register, handleSubmit } = useForm({
+    resolver: zodResolver(formScheme),
+  });
   return (
     <main className="h-screen container mx-auto flex flex-col items-center justify-center space-y-8 px-8">
       <header>
         <h1 className="text-slate-900 text-4xl font-bold mb-4">
-          Reproduce SSR Cognito authentication failure
+          Reproduce SSR Cognito authentication failure app
         </h1>
       </header>
-      <button className="bg-indigo-500 text-white px-8 rounded">Login</button>
 
-      <section className="w-full">
-        <header className="text-slate-900 text-xl font-bold mb-4">
-          Current States
-        </header>
+      <div className="grid grid-cols-2 md:grid-cols-8 w-full">
+        <form
+          action="#"
+          method="POST"
+          className="col-start-1 md:col-start-4 col-span-2"
+        >
+          <div className="shadow sm:rounded-md sm:overflow-hidden">
+            <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+              <div className="grid gap-6">
+                <div className="col-span-3 sm:col-span-2">
+                  <label
+                    htmlFor="company-website"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Email
+                  </label>
+                  <div className="mt-1 flex rounded-md shadow-sm">
+                    <input
+                      type="text"
+                      name="company-website"
+                      id="company-website"
+                      className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full  rounded-md sm:text-sm border-gray-300"
+                    />
+                  </div>
+                </div>
+              </div>
 
-        <table className="table-auto border-collapse border border-slate-400 px-4">
-          <thead className="bg-slate-50">
-            <tr>
-              <th className="border border-slate-300 text-slate-900 px-4">
-                getSession on SSR
-              </th>
-              <th className="border border-slate-300 text-slate-900 px-4">
-                getSession on Client
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="border border-slate-300 text-slate-900 px-4 py-2">
-                ---
-              </td>
-              <td className="border border-slate-300 text-slate-900 px-4 py-2">
-                ---
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-      <section className="w-full">
-        <header className="text-slate-900 text-xl font-bold mb-4">
-          Current Cookies
-        </header>
-        <table className="table-auto border-collapse border border-slate-400 px-4 w-full">
-          <thead className="bg-slate-50">
-            <tr>
-              <th className="border border-slate-300 text-slate-900 px-4">
-                Key
-              </th>
-              <th className="border border-slate-300 text-slate-900 px-4">
-                Value
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {cookies.map(([key, value]) => (
-              <tr key={key}>
-                <td className="border border-slate-300 text-slate-900 px-4 py-2">
-                  {key}
-                </td>
-                <td className="border border-slate-300 text-slate-900 px-4 py-2 overflow-hidden relative">
-                  {/* <div className="absolute inset-0"> */}
-                  {value.substring(0, 15)}...
-                  {/* {value} */}
-                  {/* </div> */}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+              <div className="grid gap-6">
+                <div className="col-span-3 sm:col-span-2">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Password
+                  </label>
+                  <div className="mt-1 flex rounded-md shadow-sm">
+                    <input
+                      type="password"
+                      name="password"
+                      id="company-website"
+                      className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full  rounded-md sm:text-sm border-gray-300"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="px-4 py-3 border-t border-gray-100 sm:px-6">
+              <button
+                type="submit"
+                className="inline-flex justify-center w-full py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Login
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {/* <StatePresenter /> */}
     </main>
   );
 };
