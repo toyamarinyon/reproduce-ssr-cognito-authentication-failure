@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 
-export const StatePresenter = (): JSX.Element => {
+type GetSessionResult = "success" | "failure";
+interface Props {
+  getSessionOnSSRResult: GetSessionResult;
+  getSessionOnClient: GetSessionResult;
+}
+export const StatePresenter = ({
+  getSessionOnClient,
+  getSessionOnSSRResult,
+}: Props): JSX.Element => {
   const [cookies, setCookies] = useState<string[][]>([]);
   useEffect(() => {
     setCookies(document.cookie.split(";").map((cookie) => cookie.split("=")));
@@ -17,6 +25,9 @@ export const StatePresenter = (): JSX.Element => {
           <thead className="bg-slate-50">
             <tr>
               <th className="border border-slate-300 text-slate-900 px-4">
+                Amplify Auth Configuration Style
+              </th>
+              <th className="border border-slate-300 text-slate-900 px-4">
                 getSession on SSR
               </th>
               <th className="border border-slate-300 text-slate-900 px-4">
@@ -27,10 +38,13 @@ export const StatePresenter = (): JSX.Element => {
           <tbody>
             <tr>
               <td className="border border-slate-300 text-slate-900 px-4 py-2">
-                ---
+                Top Level Configuration
               </td>
               <td className="border border-slate-300 text-slate-900 px-4 py-2">
-                ---
+                {getSessionOnSSRResult}
+              </td>
+              <td className="border border-slate-300 text-slate-900 px-4 py-2">
+                {getSessionOnClient}
               </td>
             </tr>
           </tbody>
